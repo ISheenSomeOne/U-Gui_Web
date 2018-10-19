@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>修改用户信息</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./jquery-3.3.1.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/my.js"></script>
+    <script>
+        var admin = window.localStorage;
+        var adminID = admin.getItem('adminID');
+        var adminName = admin.getItem('adminName');
+        var userId=GetRequest().userId;
+
+        $(function () {
+
+            //显示管理员名称
+            $('#ad-name').append(adminName);
+
+        });
+        function upUser() {
+            $.ajax({
+                type: 'PUT',
+                url: first + '/admin/manage/user/'+userId,
+                dataType: 'json',
+                data : {
+                    'userPhone' : $('#userPhone').val(),
+                    'userSex' : $('#userSex').val(),
+                    'userBalance' : $('#userBalance').val(),
+                    'userBoxtime' : $('#userBoxtime').val(),
+                    'userMajorId' : $('#userMajorId').val(),
+                    'usersignDays' : $('#usersignDays').val(),
+                    'lastsignTime' : $('#lastsignTime').val()
+                },
+                success: function (r) {
+                    if (r.code == 200) {
+                        alert('修改成功！');
+                        window.location.href='./user_info_info.html'
+                    } else {
+                        alert('请求错误！')
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="./school_info.html"> U - Gui</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="./school.html">学校信息</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="./ugui.html">U柜在哪<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./user.html">用户信息</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./use_log.html">使用记录</a>
+                </li>
+            </ul>
+            <h4 style="padding-right:20px;"><span id="ad-name" class="badge badge-info">欢迎 ~ </span></h4>
+            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">退出登录</button>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <table style="margin-top:15px;" class="table table-light">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">电话</th>
+                    <th scope="col">性别</th>
+                    <th scope="col">balance</th>
+                    <th scope="col">使用时间</th>
+                    <th scope="col">专业 - ID</th>
+                    <th scope="col">签到 - 总计</th>
+                    <th scope="col">签到 - 最近</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <tbody id="user_info_list">
+                <tr>
+                        <th scope="row"><input id="userPhone" class="input-group-text" type="text"></th>
+                        <th scope="row"><input id="userSex" class="input-group-text" type="number"></th>
+                        <th scope="row"><input id="userBalance" class="input-group-text" type="number"></th>
+                        <th scope="row"><input id="userBoxtime" class="input-group-text" type="number"></th>
+                        <th scope="row"><input id="userMajorId" class="input-group-text" type="number"></th>
+                        <th scope="row"><input id="usersignDays" class="input-group-text" type="number"></th>
+                        <th scope="row"><input id="lastsignTime" class="input-group-text" type="date"></th>
+                    <td>
+                        <button onclick="upUser()" class="btn btn-warning" type="submit">修改</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

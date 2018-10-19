@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>home</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./jquery-3.3.1.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+
+    <script>
+            var admin = window.localStorage;
+            var adminID = admin.getItem('adminID');
+            var adminName = admin.getItem('adminName');
+    
+            $(function () {
+                //加载学校列表
+                $.ajax({
+                    type: 'get',
+                    url: first + '/admin/manage/users/'+startIndex,
+                    dataType: 'json',
+                    success: function (r) {
+                        if (r.code == 200) {
+                            for(var x = 0; x < r.data.users.length; x++){
+                                $('#user_list').append('<tr>'+
+                                    '<th scope="row">'+r.data.users[x].userId+'</th>'+
+                                    '<td>'+r.data.users[x].userPhone+'</td>'+
+                                    '<td>'+r.data.users[x].user.userSex+'</td>'+
+                                    '<td>'+r.data.users[x].user.userBalance+'</td>'+
+                                    '<td>'+r.data.users[x].userBoxtime+'</td>'+
+                                    '<td>'+r.data.users[x].userMajorId+'</td>'+
+                                    '<td>'+r.data.users[x].usersignDays+'</td>'+
+                                    '<td>'+r.data.users[x].lastsignTime+'</td>'+
+                                    '<td>'+
+                                        '<a class="btn btn-info" href="./user_info.html?userId='+r.data.users[x].userId+'">详情</a>'+
+                                        '<button user_id="'+r.data.users[x].userId+'" onclick="delUser(this)" class="btn btn-danger" type="submit">删除</button>'+
+                                    '</td>'+
+                                '</tr>')
+                            }
+                        } else {
+                            alert('请求错误！')
+                        }
+                    }
+                });
+    
+                //显示管理员名称
+                $('#ad-name').append(adminName);
+    
+            });
+            function delUser(e) {
+                $.ajax({
+                    type: 'Delete ',
+                    url: first + '/admin/manage/user/'+e.getAttrbute('user_id'),
+                    dataType: 'json',
+                    success: function (r) {
+                        if (r.code == 200) {
+                            alert('删除成功！')
+                        } else {
+                            alert('请求错误！')
+                        }
+                    }
+                });
+            }
+        </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="./school.html"> U - Gui</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="./school.html">学校信息</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./ugui.html">U柜在哪</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="./user.html">用户信息<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./use_log.html">使用记录</a>
+                </li>
+            </ul>
+            <button class="btn btn-outline-danger my-2 my-sm-0" type="button">退出登录</button>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <table style="margin-top:15px;" class="table table-light">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">用户 - ID</th>
+                    <th scope="col">电话</th>
+                    <th scope="col">性别</th>
+                    <th scope="col">balance</th>
+                    <th scope="col">使用时间</th>
+                    <th scope="col">专业 - ID</th>
+                    <th scope="col">签到 - 总计</th>
+                    <th scope="col">签到 - 最近</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <tbody id="user_list">
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>
+                            <a class="btn btn-info" href="./user_info.html?userId='+r.data.users[x].userId+'">详情</a>
+                        <button class="btn btn-warning" type="submit">修改</button>
+                        <button class="btn btn-danger" type="submit">删除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

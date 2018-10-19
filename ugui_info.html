@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>U-Gui详情</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./jquery-3.3.1.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/my.js"></script>
+    <script>
+        var admin = window.localStorage;
+        var adminID = admin.getItem('adminID');
+        var adminName = admin.getItem('adminName');
+        var cabinetlocationId=GetRequest().cabinetlocationId;
+
+        $(function () {
+            //加载柜子地点和列表信息
+            $.ajax({
+                type: 'get',
+                url: first + '/admin/manage/cabinets/'+cabinetlocationId+'/'+startIndex,
+                dataType: 'json',
+                success: function (r) {
+                    if (r.code == 200) {
+                        //柜子地点信息
+                        $('#cabinetlocation').append('<th scope="row">'+r.data.cabinetlocationId+'</th>'+
+                                    '<td>'+r.data.school.schoolId+'</td>'+
+                                    '<td>'+r.data.school.schoolName+'</td>'+
+                                    '<td>'+r.data.cabinetlocationName+'</td>')
+                        //柜子列表
+                        for(var x=0; r.data.cabinets.length; x++){
+                            $('#boxs').append('<tr><td></td><th scope="row">'+r.data.cabinets[x].cabinetId+'</th><td></td><td></td><td></td><th scope="col">'+
+                                '<button onclick="newBox(this)" class="btn btn-success"  cabinet_id="'+r.data.cabinets[x].cabinetId+'" type="button">添加箱子</button></th></tr>'+
+                                '<button onclick="delCabinet(this)" cabinet_id="'+r.data.cabinets[x].cabinetId+'" class="btn btn-danger" type="button">删除柜子</button>')
+                            for(var y=0; y<r.data.cabinets.boxs.length;y++){
+                                $('#boxs').append('<tr><th scope="row">'+r.data.cabinets[x].cabinetId+'</th>'+
+                                '<td>'+r.data.cabinets[x].boxs[y].boxId+'</td>'+
+                                '<td>'+r.data.cabinets[x].boxs[y].boxStatus+'</td>'+
+                                '<td>'+r.data.cabinets[x].boxs[y].boxType+'</td>'+
+                                '<td>'+
+                                    '<a class="btn btn-warning" href="./upBox.html?boxId='+r.data.cabinets[x].boxs[y].boxId+'">修改</a>'+
+                                    '<button onclick="delBox(this)" box_id="'+r.data.cabinets[x].boxs[y].boxId+'" class="btn btn-danger" type="button">删除箱子</button>'+
+                                '</td></tr>')
+                            }
+                        }
+
+                    } else {
+                        alert('请求错误！')
+                    }
+                }
+            });
+
+            //显示管理员名称
+            $('#ad-name').append(adminName);
+
+            //删除专业
+            $('#del_major').click(function () {
+                $.ajax({
+                    type: 'Delete ',
+                    url: first + '/admin/manage/major/'+$(this).attr('major_id'),
+                    dataType: 'json',
+                    success: function (r) {
+                        if (r.code == 200) {
+                            alert('删除成功！')
+                        } else {
+                            alert('请求错误！')
+                        }
+                    }
+                });
+            })
+            //删除柜子地点
+            $('#del_cabinetlocation').click(function () {
+                $.ajax({
+                    type: 'Delete ',
+                    url: first + '/admin/manage/cabinetlocation/'+$(this).attr('cabinetlocation_id'),
+                    dataType: 'json',
+                    success: function (r) {
+                        if (r.code == 200) {
+                            alert('删除成功！')
+                        } else {
+                        alert('请求错误！')
+                        }
+                    }
+                });
+            })
+            //添加新的柜子
+            $('#newUGui').click(function () { 
+                $.ajax({
+                    type: 'POST',
+                    url: first + '/admin/manage/cabinet/'+cabinetlocationId,
+                    dataType: 'json',
+                    success: function (r) {
+                        if (r.code == 200) {
+                            alert('添加成功！')
+                        } else {
+                        alert('请求错误！')
+                        }
+                    }
+                });
+             })
+             
+             
+        })
+        //添加新箱子
+        function newBox(e) {
+            $.ajax({
+                    type: 'POST',
+                    url: first + '/admin/manage/box/'+e.getAttribute('cabinet_id'),
+                    dataType: 'json',
+                    data : {
+                        boxStatus: 0,============这里有问题
+                        boxType : 0
+                    },
+                    success: function (r) {
+                        if (r.code == 200) {
+                            alert('添加成功！')
+                        } else {
+                        alert('请求错误！')
+                        }
+                    }
+                });
+        }
+        //删除箱子
+        function delBox(e) {
+            $.ajax({
+                    type: 'Delete',
+                    url: first + '/admin/box/'+e.getAttribute('box_id'),
+                    dataType: 'json',
+                    success: function (r) {
+                        if (r.code == 200) {
+                            alert('删除成功！')
+                        } else {
+                        alert('请求错误！')
+                        }
+                    }
+                });
+        }
+        //删除指定柜子
+        function delCabinet(e) {
+            $.ajax({
+                    type: 'Delete',
+                    url: first + '/admin/manage/cabinet/'+cabinetlocationId+'/'+e.getAttribute('cabinet_id'),
+                    dataType: 'json',
+                    success: function (r) {
+                        if (r.code == 200) {
+                            alert('删除成功！')
+                        } else {
+                        alert('请求错误！')
+                        }
+                    }
+                });
+         }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="./school.html"> U - Gui</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ">
+                    <a class="nav-link" href="./school.html">学校信息</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="./ugui.html">U柜在哪<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./user.html">用户信息</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./use_log.html">使用记录</a>
+                </li>
+            </ul>
+            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">退出登录</button>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div style="padding-top:15px;" class="row">
+            <div class="col-2">
+                <div class="list-group" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list"
+                        href="#list-home" role="tab" aria-controls="home">地点信息</a>
+                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile"
+                        role="tab" aria-controls="profile">U-Gui列表</a>
+                </div>
+            </div>
+            <div class="col-10">
+                <div class="tab-content" id="nav-tabContent">
+                    <!--地点-->
+                    <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                        <table class="table table-light">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">地点 - ID</th>
+                                    <th scope="col">学校 - ID</th>
+                                    <th scope="col">学校 - 名称</th>
+                                    <th scope="col">地点 - 名称</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="cabinetlocation">
+                                    <th scope="row">1</th>
+                                    <td>Mark</td>
+                                    <td>Mark</td>
+                                    <td>Mark</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--专业-->
+                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                        <table class="table table-light">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col"><button id="newUGui" class="btn btn-success" type="button">添加U柜</button></th>
+                                    <th scope="col">U-Gui - ID</th>
+                                    <th scope="col">箱子 - ID</th>
+                                    <th scope="col">箱子 - 状态</th>
+                                    <th scope="col">箱子 - 类型</th>
+                                    <th scope="col">操 作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="boxs">
+                                    <tr><td></td><th scope="row">1</th><td></td><td></td><td></td>
+                                        <th scope="col"><button onclick="newBox(this)" class="btn btn-success" type="button">添加箱子</button>
+                                            <button onclick="delCabinet(this)" cabinet_id="'+r.data.cabinets.cabinetId+'" class="btn btn-danger" type="button">删除柜子</button></th></tr>
+                                <tr>
+                                    <td></td>
+                                    <th scope="row">1</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        
+                                        <a class="btn btn-warning" href="./upBox.html?'++'">修改</a>
+                                        <button onclick="delBox(this)" box_id="'+r.data.cabinets[x].boxs[y].boxId+'" class="btn btn-danger" type="button">删除箱子</button>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>

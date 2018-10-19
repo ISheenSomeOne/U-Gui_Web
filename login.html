@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>管理员登录</title>
+  <link href="./Floating labels login_files/bootstrap.min.css" rel="stylesheet">
+  <link href="./Floating labels login_files/floating-labels.css" rel="stylesheet">
+  <script>
+      function login(){
+        $.ajax({
+                type: 'get',
+                url: first + '/admin/options/login',
+                dataType: 'json',
+                data: {
+                  'adminId' : $('#inputID').val(),
+                  'adminPassword' : $('#inputPassword').val()
+                },
+                success: function (r) {
+                    if (r.code == 200) {
+                        window.location.href='./school.html'
+                        var admin = window.localStorage;
+                        admin.setItem('adminID',r.data.adminId);
+                        admin.setItem('adminName',r.data,adminName);
+                    } else {
+                        alert('请求错误！')
+                    }
+                }
+            });
+      }
+  </script>
+</head>
+
+<body>
+  <form class="form-signin">
+    <div class="text-center mb-4">
+      <h1 class="h3 mb-3 font-weight-normal">登 录</h1>
+    </div>
+
+    <div class="form-label-group">
+      <input type="text" id="inputID" class="form-control" placeholder="管理员 - ID" required="" autofocus="">
+      <label for="inputID">管理员 - ID</label>
+    </div>
+
+    <div class="form-label-group">
+      <input type="password" id="inputPassword" class="form-control" placeholder="密 码" required="">
+      <label for="inputPassword">密 码</label>
+    </div>
+
+    <div class="checkbox mb-3">
+      <label>
+        <input type="checkbox" value="remember-me"> 记住我
+      </label>
+    </div>
+    <button onclick="login()" class="btn btn-lg btn-primary btn-block" type="submit">登 录</button>
+  </form>
+
+
+</body>
+
+</html>

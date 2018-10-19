@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>home</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./jquery-3.3.1.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/my.js"></script>
+    <script>
+        var admin = window.localStorage;
+        var adminID = admin.getItem('adminID');
+        var adminName = admin.getItem('adminName');
+
+        $(function () {
+            //加载学校列表
+            $.ajax({
+                type: 'get',
+                url: first + '/admin/manage/schools',
+                dataType: 'json',
+                success: function (r) {
+                    if (r.code == 200) {
+                        for(var x = 0; x < r.data.length; x++){
+                            $('#school').append(
+                '<tr><td></td><th scope="row">'+r.data[x].schoolId+'</th><td>'+r.data[x].schoolName+'</td>'+
+                    '<td>'+
+                        '<a class="btn btn-info" href="./school_info.html?school_id='+r.data[x].schoolId+'">详情</a>'+
+                        '<a href="./upSchool.html?school_id='+r.data[x].schoolId+'" class="btn btn-warning">修改</a>'+
+                        '<button onclick="delSchool(this)" school_id="'+r.data[x].schoolId+'" class="btn btn-danger" type="button">删除</button>'+
+                    '</td>'+
+                '</tr>')
+                        }
+                    } else {
+                        alert('请求错误！')
+                    }
+                }
+            });
+
+            //显示管理员名称
+            $('#ad-name').append(adminName);
+
+        });
+        //添加学校
+        function addSchool() {
+            $.ajax({
+                type: 'post',
+                url: first + '/admin/manage/school',
+                dataType: 'json',
+                data : {
+                    'schoolName' : $('#newSchoolName').val()
+                },
+                success: function (r) {
+                    if (r.code == 200) {
+                        alert('添加成功！')
+                    } else {
+                        alert('请求错误！')
+                    }
+                }
+            });
+        }
+        //修改学校名称
+        // function upSchool(e) {
+        //     $.ajax({
+        //         type: 'PUT',
+        //         url: first + '/admin/manage/school/'+$(this).attr('school_id'),
+        //         dataType: 'json',
+        //         data : {
+        //             'schoolName' : $('#upSchooleName').val()
+        //         },
+        //         success: function (r) {
+        //             if (r.code == 200) {
+        //                 alert('删除成功！')
+        //             } else {
+        //                 alert('请求错误！')
+        //             }
+        //         }
+        //     });
+        // }
+        //删除学校
+        function delSchool(e) {
+            $.ajax({
+                type: 'DELETE',
+                url: first + '/admin/manage/school/'+$(this).attr('school_id'),
+                success: function (r) {
+                    if (r.code == 200) {
+                        alert('删除成功！')
+                    } else {
+                        alert('请求错误！')
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="./school.html"> U - Gui</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="./school.html">学校信息<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./ugui.html">U柜在哪</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./user.html">用户信息</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./use_log.html">使用记录</a>
+                </li>
+            </ul>
+            <h4 style="padding-right:20px;"><span id="ad-name" class="badge badge-info">欢迎 ~ </span></h4>
+            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">退出登录</button>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <table style="margin-top:15px;" class="table table-light">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col"><button class="btn btn-success" type="button" data-toggle="modal" data-target="#exampleModalCenter">添加学校</button></th>
+                    <!--添加学校的模态框-->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="exampleModalLongTitle">请输入学校名称</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <input id="newSchoolName" class="form-control" type="text">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                    <button onclick="addSchool()" type="button" class="btn btn-primary">提交</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <th scope="col">学校 - ID</th>
+                    <th scope="col">学校 - 名称</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <tbody id="school">
+                <tr>
+                    <td></td>
+                    <th scope="row">1</th>
+                    <td>sss</td>
+                    <td>
+                        <a class="btn btn-info" href="./school_info.html">详情</a>
+                        <a href="./upSchool.html?school_id='+r.data[x].schoolId+'" class="btn btn-warning">修改</a>
+                        <button class="btn btn-danger" type="submit">删除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

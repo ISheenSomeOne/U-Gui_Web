@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>log</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./jquery-3.3.1.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+
+    <script>
+        var admin = window.localStorage;
+        var adminID = admin.getItem('adminID');
+        var adminName = admin.getItem('adminName');
+
+        $(function () {
+            //加载学校列表
+            $.ajax({
+                type: 'get',
+                url: first + '/admin/manage/boxuserecords/'+startIndex,
+                dataType: 'json',
+                success: function (r) {
+                    if (r.code == 200) {
+                        for(var x = 0; x < r.data.length; x++){
+                            $('#use_list').append('<tr>'+
+                                '<th scope="row">'+r.data[x].recordId+'</th>'+
+                                '<td>'+r.data[x].boxId+'</td>'+
+                                '<td>'+r.data[x].user.userId+'</td>'+
+                                '<td>'+r.data[x].user.userPhone+'</td>'+
+                                '<td>'+r.data[x].start_time+'</td>'+
+                                '<td>'+r.data[x].end_time+'</td>'+
+                                '<td>'+
+                                    '<button record_id="'+r.data[x].recordId+'" onclick="delLog(this)" class="btn btn-danger" type="submit">删除</button>'+
+                                '</td>'+
+                            '</tr>')
+                        }
+                    } else {
+                        alert('请求错误！')
+                    }
+                }
+            });
+
+            //显示管理员名称
+            $('#ad-name').append(adminName);
+
+        });
+        function delLog(e) {
+            $.ajax({
+                type: 'Delete ',
+                url: first + '/admin/manage/boxuserecord/'+e.getAttrbute('record_id'),
+                dataType: 'json',
+                success: function (r) {
+                    if (r.code == 200) {
+                        alert('删除成功！')
+                    } else {
+                        alert('请求错误！')
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="./school.html"> U - Gui</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="./school.html">学校信息</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./ugui.html">U柜在哪</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./user.html">用户信息</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="./use_log.html">使用记录<span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+            <button class="btn btn-outline-danger my-2 my-sm-0" type="button">退出登录</button>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <table style="margin-top:15px;" class="table table-light">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">记录 - ID</th>
+                    <th scope="col">箱子 - ID</th>
+                    <th scope="col">用户 - ID</th>
+                    <th scope="col">用户 - 电话</th>
+                    <th scope="col">开始时间</th>
+                    <th scope="col">结束时间</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <tbody id="use_list">
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>Mark</td>
+                    <td>
+                        <button class="btn btn-danger" type="submit">删除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
